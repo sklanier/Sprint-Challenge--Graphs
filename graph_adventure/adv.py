@@ -21,7 +21,35 @@ player = Player("Name", world.startingRoom)
 
 
 # FILL THIS IN
-traversalPath = ['n', 's']
+
+#variable definitions
+oppositeDirection = {'n': 's', 's': 'n', 'e': 'w', 'w': 'e'}
+traversalPath = []
+reversalPath = [None]
+rooms = {}
+roomsDictionary = {}
+
+#maze algorithm
+
+#initialize first room by appending each exit
+rooms[0] = player.currentRoom.getExits()
+roomsDictionary[0] = player.currentRoom.getExits()
+while len(rooms) < len(roomGraph)-1:
+    if player.currentRoom.id not in rooms:
+        rooms[player.currentRoom.id] = player.currentRoom.getExits()
+        roomsDictionary[player.currentRoom.id] = player.currentRoom.getExits()
+        lastDirection = reversalPath[-1]
+        roomsDictionary[player.currentRoom.id].remove(lastDirection)
+    while len(roomsDictionary[player.currentRoom.id]) < 1: 
+        reverse = reversalPath.pop()
+        traversalPath.append(reverse)
+        player.travel(reverse)
+    exit_dir = roomsDictionary[player.currentRoom.id].pop(0)
+    traversalPath.append(exit_dir)
+    reversalPath.append(oppositeDirection[exit_dir])
+    player.travel(exit_dir)
+    if len(roomGraph) - len(rooms) ==1:
+        rooms[player.currentRoom.id] = player.currentRoom.getExits()
 
 
 # TRAVERSAL TEST
